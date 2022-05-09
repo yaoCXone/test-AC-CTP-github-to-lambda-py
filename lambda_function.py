@@ -5,6 +5,8 @@ import boto3
 
 print('Loading function')
 
+s3 = boto3.client('s3')
+
 def lambda_handler(event, context):
     s3_to_lambda(event, context)
 
