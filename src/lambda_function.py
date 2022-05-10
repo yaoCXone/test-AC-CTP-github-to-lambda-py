@@ -1,4 +1,3 @@
-import pandas as pd
 import json
 import urllib.parse
 import boto3
@@ -13,12 +12,6 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda function!')
     }
-
-def main():   
-    d={'col1': [1,2], 'col2': [3,4]}
-    df = pd.DataFrame(data=d)
-    print(df)
-    print('Done x1')
 
 def s3_to_lambda(event, context):
     #print("Received event: " + json.dumps(event, indent=2))
@@ -38,6 +31,4 @@ def s3_to_lambda(event, context):
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
 
-if __name__ == "__main__":
-    main()
 
