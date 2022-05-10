@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     s3_to_lambda(event, context)
     return {
         'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
+        'body': json.dumps('Hello from Lambda function!')
     }
 
 def main():   
