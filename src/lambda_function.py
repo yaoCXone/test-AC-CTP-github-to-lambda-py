@@ -20,7 +20,7 @@ def s3_to_lambda(event, context):
     # Get the object from the event and show its content type
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8') 
-    print("Received notification of bucket:(" + bucket + ") key:(" +key+") content change.")
+    print("Received notification of bucket:(" + bucket + ") key:(" + key +") content change.")
     try:        
         body = read_s3_contents(bucket, key)
         if(body is None):
@@ -37,8 +37,8 @@ def read_s3_contents(bucket, key):
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
         print("CONTENT TYPE: " + response['ContentType'])
-        body = read_s3_contents(response)        
-        return load_json_from_binary(body)
+        binary_data = response['Body'].read()        
+        return load_json_from_binary(binary_data)
 
     except Exception as e:
         print(e)
