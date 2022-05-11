@@ -1,18 +1,14 @@
 import src.panads_sample as ps
 import src.lambda_function as lf
 import samples.event_samples as evts
+import src.crt_processor as crt
 import json
 
 def main():
-	evt = evts.event_1()
-	
-	serialized = json.dumps(evt, sort_keys=True, indent=4)
-	print(serialized)
-	## lf.s3_to_lambda(evt, "context")
-	## now we are gonna convert json to object
-	deserialization=json.loads(serialized)
-	print(deserialization)
-	ps.print_sample_2x2()
+	body = crt.read_file_binary('C:\\temp\\sample-event')
+	#body = crt.read_file_binary('C:\\temp\\1092107.cjs')
+	content = lf.load_json_from_binary(body)
+	print(content)
 
 def lambda_handler_test(event, context):
     lf.s3_to_lambda(event, context)

@@ -1,4 +1,8 @@
 import json
+from pathlib import Path
+
+def read_file_binary(file_path):
+	return Path(file_path).read_bytes() # Python 3.5+
 
 
 def has_records(response):
@@ -12,5 +16,4 @@ def has_records(response):
 	finally:
 		pass
 
-def s3_record_get_keys(record):
 

@@ -1,4 +1,5 @@
 import json
+from json.decoder import JSONDecodeError
 import urllib.parse
 import boto3
 
@@ -18,32 +19,42 @@ def s3_to_lambda(event, context):
 
     # Get the object from the event and show its content type
     bucket = event['Records'][0]['s3']['bucket']['name']
-    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
-    print('bucket: '+bucket)
-    print('key: '+key)
-    try:
-        response = s3.get_object(Bucket=bucket, Key=key)
-        print("CONTENT TYPE: " + response['ContentType'])
-        print("Received notification of bucket:(" + bucket + ") key:(" +key+") content change.")
-        body = read_s3_contents(response)
-        print(body)
-        try:
-            records_json = json.loads(body)
-            print(records_json)
-        except ValueError:  # includes simplejson.decoder.JSONDecodeError
-            print('Invalid JSON from response body')
-        #return response['ContentType']
+    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8') 
+    print("Received notification of bucket:(" + bucket + ") key:(" +key+") content change.")
+    try:        
+        body = read_s3_contents(bucket, key)
+        if(body is None):
+            print("Invalid json content from object in bucket:(" + bucket + ") key:(" +key+")")
+        else:
+            print(body)
+        
     except Exception as e:
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
 
+def read_s3_contents(bucket, key):
+    try:
+        response = s3.get_object(Bucket=bucket, Key=key)
+        print("CONTENT TYPE: " + response['ContentType'])
+        body = read_s3_contents(response)        
+        return load_json_from_binary(body)
 
-def read_s3_contents(response):
-    # open the file object and read it into the variable filedata. 
-    filedata = response['Body'].read()
+    except Exception as e:
+        print(e)
+        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+        raise e
 
-    # file data will be a binary stream.  We have to decode it 
-    return filedata.decode('utf-8') 
+def load_json_from_binary(binary_data):
+    try:
+        return json.loads(binary_data)
+    except JSONDecodeError as e:
+        print(e)
+        print("Error in loading json binary data")
+    except ValueError as ve:
+        print(ve) 
+        print('Invalid JSON value in string')
+    except TypeError as te:
+        print(te) 
 
 
