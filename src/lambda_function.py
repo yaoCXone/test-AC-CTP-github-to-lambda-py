@@ -6,6 +6,13 @@ print('Loading function')
 
 s3 = boto3.client('s3')
 
+def lambda_handler(event, context):
+    s3_to_lambda(event, context)
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda function!')
+    }
+
 def s3_to_lambda(event, context):
     #print("Received event: " + json.dumps(event, indent=2))
 
