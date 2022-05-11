@@ -13,7 +13,7 @@ phases:
       - zip -r9 ../deplyment_package.zip .
       - cd ..
       - cd src
-      - zip -g ../deplyment_package.zip .
+      - zip -R ../deplyment_package.zip "*.py"
       - cd ..
       - zip -g deplyment_package.zip main.py
   post_build:
