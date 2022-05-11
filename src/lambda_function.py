@@ -25,7 +25,7 @@ def s3_to_lambda(event, context):
         response = s3.get_object(Bucket=bucket, Key=key)
         print("CONTENT TYPE: " + response['ContentType'])
         print("Received notification of bucket:(" + bucket + ") key:(" +key+") content change.")
-        body = response['Body'].read()
+        body = read_s3_contents(response)
         print(body)
         #return response['ContentType']
     except Exception as e:
@@ -34,3 +34,9 @@ def s3_to_lambda(event, context):
         raise e
 
 
+def read_s3_contents(response):
+    # open the file object and read it into the variable filedata. 
+    filedata = response['Body'].read()
+
+    # file data will be a binary stream.  We have to decode it 
+    return filedata.decode('utf-8') 
