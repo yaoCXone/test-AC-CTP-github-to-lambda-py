@@ -25,6 +25,8 @@ def s3_to_lambda(event, context):
         response = s3.get_object(Bucket=bucket, Key=key)
         print("CONTENT TYPE: " + response['ContentType'])
         print("Received notification of bucket:(" + bucket + ") key:(" +key+") content change.")
+        body = obj['Body'].read()
+        print(body)
         #return response['ContentType']
     except Exception as e:
         print(e)
