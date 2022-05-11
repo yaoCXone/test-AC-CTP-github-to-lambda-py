@@ -27,6 +27,11 @@ def s3_to_lambda(event, context):
         print("Received notification of bucket:(" + bucket + ") key:(" +key+") content change.")
         body = read_s3_contents(response)
         print(body)
+        try:
+            records_json = json.loads(body)
+            print(records_json)
+        except ValueError:  # includes simplejson.decoder.JSONDecodeError
+            print('Invalid JSON from response body')
         #return response['ContentType']
     except Exception as e:
         print(e)
@@ -40,3 +45,5 @@ def read_s3_contents(response):
 
     # file data will be a binary stream.  We have to decode it 
     return filedata.decode('utf-8') 
+
+
