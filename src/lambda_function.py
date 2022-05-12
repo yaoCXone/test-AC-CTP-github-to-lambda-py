@@ -1,12 +1,8 @@
 import json
-from json.decoder import JSONDecodeError
 from s3_ctr import s3_json_object as S3JsonObject
 import urllib.parse
-import boto3
 
 print('Loading function')
-
-s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
     s3_to_lambda(event, context)
