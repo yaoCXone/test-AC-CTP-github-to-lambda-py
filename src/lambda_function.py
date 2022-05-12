@@ -25,7 +25,7 @@ def s3_to_lambda(event, context):
         if(json_content is None):
             print("Invalid json content from object in bucket:(" + bucket + ") key:(" +key+")")
         else:
-            print(body)
+            print(json_content)
         
     except Exception as e:
         print(e)
