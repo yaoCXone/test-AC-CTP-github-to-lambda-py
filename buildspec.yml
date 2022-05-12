@@ -15,7 +15,6 @@ phases:
       - cd src
       - zip -R ../deplyment_package.zip "*.py"
       - cd ..
-      - zip -g deplyment_package.zip main.py
   post_build:
     commands:
       - echo "Updating lambda Function..."

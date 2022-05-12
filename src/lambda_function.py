@@ -1,5 +1,6 @@
 import json
 from json.decoder import JSONDecodeError
+from s3_ctr import s3_json_object as S3JsonObject
 import urllib.parse
 import boto3
 
@@ -21,9 +22,11 @@ def s3_to_lambda(event, context):
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8') 
     print("Received notification of bucket:(" + bucket + ") key:(" + key +") content change.")
-    try:        
-        body = read_s3_contents(bucket, key)
-        if(body is None):
+    try:       
+        json_obj = S3JsonObject(bucket, key)
+        json_content = json_obj.read_json_contects()
+
+        if(json_content is None):
             print("Invalid json content from object in bucket:(" + bucket + ") key:(" +key+")")
         else:
             print(body)
@@ -33,28 +36,5 @@ def s3_to_lambda(event, context):
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
 
-def read_s3_contents(bucket, key):
-    try:
-        response = s3.get_object(Bucket=bucket, Key=key)
-        print("CONTENT TYPE: " + response['ContentType'])
-        binary_data = response['Body'].read()        
-        return load_json_from_binary(binary_data)
-
-    except Exception as e:
-        print(e)
-        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
-        raise e
-
-def load_json_from_binary(binary_data):
-    try:
-        return json.loads(binary_data)
-    except JSONDecodeError as e:
-        print(e)
-        print("Error in loading json binary data")
-    except ValueError as ve:
-        print(ve) 
-        print('Invalid JSON value in string')
-    except TypeError as te:
-        print(te) 
 
 
