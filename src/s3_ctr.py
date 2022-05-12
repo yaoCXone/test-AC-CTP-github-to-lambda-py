@@ -18,7 +18,7 @@ def read_json_contents_from_s3_bucket(bucket, key):
     try:
         response = s3.get_object(Bucket = bucket, Key = key)
         print("CONTENT TYPE: " + response['ContentType'])
-        binary_data = response['Body'].read()        
+        binary_data = response['Body'].read()
         return load_json_from_binary(binary_data)
 
     except Exception as e:
@@ -33,7 +33,7 @@ def load_json_from_binary(binary_data):
         print(e)
         print("Error in loading json binary data")
     except ValueError as ve:
-        print(ve) 
+        print(ve)
         print('Invalid JSON value in string')
     except TypeError as te:
         print(te)

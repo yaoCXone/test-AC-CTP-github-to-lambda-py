@@ -1,6 +1,7 @@
 import json
 from s3_ctr import s3_json_object as S3JsonObject
 import urllib.parse
+from ctr_json import ctr_json_object as ctr_obj
 
 print('Loading function')
 
@@ -25,8 +26,11 @@ def s3_to_lambda(event, context):
         if(json_content is None):
             print("Invalid json content from object in bucket:(" + bucket + ") key:(" +key+")")
         else:
+            ctr = ctr_obj(evnts.event_1())
+            if not ctr.is_ctr_json():
+                print("this is not valid CTR json message:")
             print(json_content)
-        
+            
     except Exception as e:
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
