@@ -20,13 +20,13 @@ def s3_to_lambda(event, context):
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8') 
     print("Received notification of bucket:(" + bucket + ") key:(" + key +") content change.")
     try:       
-        json_obj = S3JsonObject(bucket, key)
-        json_content = json_obj.read_json_contects()
+        s3_object = S3JsonObject(bucket, key)
+        json_content = s3_object.read_json_contects()
 
         if(json_content is None):
             print("Invalid json content from object in bucket:(" + bucket + ") key:(" +key+")")
         else:
-            ctr = ctr_obj(evnts.event_1())
+            ctr = ctr_obj(json_content)
             if not ctr.is_ctr_json():
                 print("this is not valid CTR json message:")
             print(json_content)
